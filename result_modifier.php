@@ -34,25 +34,11 @@ $arResult['GRID']['CHARACTS_LIST'] = array_merge($arResult['GRID']['CHARACTS_LIS
 //Adding CURRENT to properties
 foreach ($arResult["GRID"]["ROWS"] as $k => $v)
 {
-	echo "<pre>";
-	//print_r("$k _is:" . $v['PRODUCT_ID']);
-	print_r("$k _is:" . $v);
-	echo "</pre>";
-	foreach ($v as $k_in => $v_in)
-	{
-		//echo "<pre>";
-		//print_r("$k_in _is:" . $v_in);
-		//echo "</pre>";
-	}
 	//$arFilter = Array("ID"=>'102539');//one battery
 	$arFilter = Array("ID"=>$v['PRODUCT_ID']);//one battery
 	$arSelect = Array("ID", "NAME", "IBLOCK_ID");
 
 	$rsElements = \CIBlockElement::GetList(Array(), $arFilter, false, false, $arSelect);
-
-	//echo "<pre>";
-	//print_r("rsElements _is:" . $rsElements);
-	//echo "</pre>";
 
 	while($arElement = $rsElements->GetNextElement())
 	{
@@ -66,42 +52,32 @@ foreach ($arResult["GRID"]["ROWS"] as $k => $v)
 		$PROPS = array();
 		while ($ar_props = $element_props->Fetch())
 		{
+			//echo "<pre>";
+			//print_r("ar_props['VALUE'] _is:" . $ar_props['VALUE']);
+			//echo "</pre>";
 			if($ar_props['CODE'] == 'CURRENT')
 			{
- 				$PROPS[$ar_props['CODE']] = $ar_props['VALUE'];
+				$PROPS['PROPERTY_CURRENT_USB_VALUE'] = $ar_props['VALUE'];
+				//$PROPS[$ar_props['CODE']] = $ar_props['VALUE'];
+				//echo "<pre>";
+				//print_r("ar_props['VALUE'] _is:" . $ar_props['VALUE']);
+				//echo "</pre>";
 			}
 		}
 	}
+	//foreach ($PROPS as $prps_key => $prps_value)
+	//{
+		//echo "<pre>";
+		//print_r("$prps_key _is:" . $prps_value);
+		//echo "</pre>";
+	//}
 
 	$arResult["GRID"]["ROWS"][$k] += $PROPS;
 
-	//echo "<pre>";
-	//print_r("PROPS _is:" . $PROPS);
-	//echo "</pre>";
-
-	//foreach($PROPS as $key => $value)
-		//foreach($PROPS as $item)
-		//{
-		//echo "<pre>";
-		//print_r("PROPS _is:" . $item);
-		//print_r("$PROPS_kk _is:" . $PROPS_kk);
-		//echo "</pre>";
-		//}
-
-		//foreach($arFields_res as $kk => $vv)
-		//{
-		//echo "<pre>";
-		//print_r(" _is:" . $arFields_res["CURRENT"]);
-		//print_r(" _is:" . $arFields_res);
-		//print_r(" _is:" . $vv);
-		//echo "</pre>";
-		//}
-
-
-	//foreach ($v as $k_in => $v_in)
+	//foreach ($arResult["GRID"]["ROWS"][$k] as $prps_key => $prps_value)
 	//{
 		//echo "<pre>";
-		//print_r("$k_in _is:" . $v_in);
+		//print_r("$prps_key _is:" . $prps_value);
 		//echo "</pre>";
 	//}
 }
@@ -113,15 +89,24 @@ foreach ($arResult["GRID"]["ROWS"] as $k => $v)
 $products = array();
 foreach ($arResult['GRID']['ROWS'] as $BASKET_ID => $arItem) 
 {
+	//echo "<pre>";
+	//print_r("$BASKET_ID _is:" . $arItem);
+	//echo "</pre>";
+
 	$products[] = $arItem['PRODUCT_ID'];
 	foreach ($arItem as $k_in => $v_in)
 	{
-		echo "<pre>";
-		print_r("$k_in _is:" . $v_in);
-		echo "</pre>";
+		//echo "<pre>";
+		//print_r("$k_in _is:" . $v_in);
+		//echo "</pre>";
 	}
 
 }
+
+
+
+
+
 
 
 $rsGroups = CIBlockElement::GetElementGroups($products, true, array('ID', 'CODE', 'IBLOCK_ELEMENT_ID', 'IBLOCK_ID'));
@@ -129,11 +114,18 @@ $rsGroups = CIBlockElement::GetElementGroups($products, true, array('ID', 'CODE'
 while ($arGroup = $rsGroups->Fetch()) 
 {
 	$arGroups[$arGroup['IBLOCK_ELEMENT_ID']] = $arGroup;
+	//echo "<pre>";
+	//print_r("group _is:" . $group);
+	//echo "</pre>";
 }
 
 
 foreach ($arGroups as $group) 
 {
+	//echo "<pre>";
+	//print_r("group _is:" . $group);
+	//echo "</pre>";
+
 	$db_sects = CIBlockSection::GetNavChain($group['IBLOCK_ID'], $group['ID'], array('ID', 'CODE'));
 	while($ar_nav = $db_sects->Fetch()) 
 	{
@@ -143,9 +135,18 @@ foreach ($arGroups as $group)
 
 foreach ($arGroups as $prodId => $group) 
 {
+	//echo "<pre>";
+	//print_r("$prodId _is:" . $group);
+	//echo "</pre>";
+
 	$is_craftmann = false;
-	foreach ($group['CHAIN'] as $section) {
-		if ($section['CODE'] == 'craftmann') {
+	foreach ($group['CHAIN'] as $section) 
+	{
+		//echo "<pre>";
+		//print_r("section['CODE'] _is:" . $section['CODE']);
+		//echo "</pre>";
+		if ($section['CODE'] == 'craftmann') 
+		{
 			$is_craftmann = true;
 			break;
 		}
@@ -153,4 +154,35 @@ foreach ($arGroups as $prodId => $group)
 	$arGroups[$prodId]['CRAFTMANN'] = $is_craftmann;
 }
 $arResult['ELEMENT_GROUPS'] = $arGroups;
+
+
+
+//if ($arResult['ELEMENT_GROUPS'][$arItem['PRODUCT_ID']]['CRAFTMANN'])
+//{
+	//$CRAFTMANN = array('PROPERTY_CURRENT_USB_VALUE' => 'Сила тока (A)');
+	//
+	//$arResult['GRID']['CHARACTS_LIST'] += $CRAFTMANN;
+//}
+
+
+foreach ($arResult['GRID']['CHARACTS_LIST'] as $code => $name) 
+{
+	//echo "<pre>";
+	//print_r("$code _is:" . $name);
+	//echo "</pre>";
+
+	foreach ($arItem as $k_in => $v_in)
+	{
+		//echo "<pre>";
+		//print_r("$k_in _is:" . $v_in);
+		//echo "</pre>";
+	}
+
+}
+
+
+
+
+
+
 ?>

@@ -394,10 +394,17 @@ foreach ($arBasketItems as $arBasketItem)
 
 <?if ($arResult['ELEMENT_GROUPS'][$arItem['PRODUCT_ID']]['CRAFTMANN']):?>
 
-<?php $arItem['PRODUCT_PROVIDER_CLASS'] = $arItem['NAME'];  ?>
+<?php 
+$arItem['PRODUCT_PROVIDER_CLASS'] = $arItem['NAME'];  
+$is_CRAFTMANN = true;
+//print_r("is_CRAFTMANN = TRUE");
+?>
 
 <?else:?>
-
+<?
+$is_CRAFTMANN = false;
+//print_r("is_CRAFTMANN = FALSE");
+?>
 <?endif;?> <?=$arItem["PRODUCT_PROVIDER_CLASS"]?>
 
 										<?if (strlen($arItem["DETAIL_PAGE_URL"]) > 0):?></a><?endif;?>
@@ -407,21 +414,17 @@ foreach ($arBasketItems as $arBasketItem)
 										<?
 
 
-
-if($code == 'PROPERTY_CURRENT_USB_VALUE' )
-{
-	//echo "<pre>";
-	//print_r($arResult['GRID']['CHARACTS_LIST']['PROPERTY_CURRENT_USB_VALUE']);
-	//echo "<pre>";
-
-	//echo "<pre>";
-	//print_r($name);
-	//echo "<pre>";
-
-	//print_r($code);
-	//print_r($name);
-
+if($is_CRAFTMANN)
+{ 
+	if(($code == 'PROPERTY_ORIGINAL_CODE_VALUE') || ($code == 'PROPERTY_TYPE_VALUE'))
+	{
+		$code = 'PROPERTY_DO_NOT_SHOW';
+	}
 }
+
+//echo "<pre>";
+//print_r($code);
+//echo "<pre>";
 
 //echo "<pre>";
 //print_r($arResult['GRID']['CHARACTS_LIST']['PROPERTY_CURRENT_USB_VALUE']);
@@ -439,16 +442,17 @@ if(count($arItem[$code]) > 0)
 	$outArray = explode(';',$arItem[$code]);
 	//echo "<pre>";
 	//print_r($arItem[$code]);
-	print_r($code);
-	print_r($arItem['CURRENT']);
+	//print_r($code);
+	//print_r($arItem['CURRENT']);
+	//print_r($arItem['PROPERTY_CAPACITY_VALUE']);
 	//echo "<pre>";
-	foreach($outArray as $k => $v)
-	{
+	//foreach($outArray as $k => $v)
+	//{
 		//echo "<pre>";
 		//print_r("$k is:" . $v);
 		//echo "<pre>";
 
-	}
+	//}
 }
 
 
@@ -456,152 +460,13 @@ if(count($arItem[$code]) > 0)
 
 											<?if(count($arItem[$code]) > 0):?>
 											<dt><?=$name?></dt>
-										<dd style="text-align: right;/*margin-right: 50px;*/"><?=explode(';',$arItem[$code])[0] . 'fffffffffffff'
+										<dd style="text-align: right;/*margin-right: 50px;*/"><?=explode(';',$arItem[$code])[0]
 
 ?></dd>
 											<?endif;?> 
 										<?endforeach;?>
 									</dl>
-									<?/*<div class="bx_ordercart_itemart">
-										<?
-										if ($bPropsColumn):
-											foreach ($arItem["PROPS"] as $val):
 
-												if (is_array($arItem["SKU_DATA"]))
-												{
-													$bSkip = false;
-													foreach ($arItem["SKU_DATA"] as $propId => $arProp)
-													{
-														if ($arProp["CODE"] == $val["CODE"])
-														{
-															$bSkip = true;
-															break;
-														}
-													}
-													if ($bSkip)
-														continue;
-												}
-
-												echo $val["NAME"].":&nbsp;<span>".$val["VALUE"]."<span><br/>";
-											endforeach;
-										endif;
-										?>
-									</div>
-									<?
-									/*if (is_array($arItem["SKU_DATA"])):
-										foreach ($arItem["SKU_DATA"] as $propId => $arProp):
-
-											// is image property
-											$isImgProperty = false;
-											foreach ($arProp["VALUES"] as $id => $arVal)
-											{
-												if (isset($arVal["PICT"]) && !empty($arVal["PICT"]))
-												{
-													$isImgProperty = true;
-													break;
-												}
-											}
-
-											$full = (count($arProp["VALUES"]) > 5) ? "full" : "";
-
-											if ($isImgProperty): // iblock element relation property
-											?>
-												<div class="bx_item_detail_scu_small_noadaptive <?=$full?>">
-
-													<span class="bx_item_section_name_gray">
-														<?=$arProp["NAME"]?>:
-													</span>
-
-													<div class="bx_scu_scroller_container">
-
-														<div class="bx_scu">
-															<ul id="prop_<?=$arProp["CODE"]?>_<?=$arItem["ID"]?>"
-																style="width: 200%; margin-left:0%;"
-																class="sku_prop_list"
-																>
-																<?
-																foreach ($arProp["VALUES"] as $valueId => $arSkuValue):
-
-																	$selected = "";
-																	foreach ($arItem["PROPS"] as $arItemProp):
-																		if ($arItemProp["CODE"] == $arItem["SKU_DATA"][$propId]["CODE"])
-																		{
-																			if ($arItemProp["VALUE"] == $arSkuValue["NAME"] || $arItemProp["VALUE"] == $arSkuValue["XML_ID"])
-																				$selected = "bx_active";
-																		}
-																	endforeach;
-																?>
-																	<li style="width:10%;"
-																		class="sku_prop <?=$selected?>"
-																		data-value-id="<?=$arSkuValue["XML_ID"]?>"
-																		data-element="<?=$arItem["ID"]?>"
-																		data-property="<?=$arProp["CODE"]?>"
-																		>
-																		<a href="javascript:void(0);">
-																			<span style="background-image:url(<?=$arSkuValue["PICT"]["SRC"]?>)"></span>
-																		</a>
-																	</li>
-																<?
-																endforeach;
-																?>
-															</ul>
-														</div>
-
-														<div class="bx_slide_left" onclick="leftScroll('<?=$arProp["CODE"]?>', <?=$arItem["ID"]?>);"></div>
-														<div class="bx_slide_right" onclick="rightScroll('<?=$arProp["CODE"]?>', <?=$arItem["ID"]?>);"></div>
-													</div>
-
-												</div>
-											<?
-											else:
-											?>
-												<div class="bx_item_detail_size_small_noadaptive <?=$full?>">
-
-													<span class="bx_item_section_name_gray">
-														<?=$arProp["NAME"]?>:
-													</span>
-
-													<div class="bx_size_scroller_container">
-														<div class="bx_size">
-															<ul id="prop_<?=$arProp["CODE"]?>_<?=$arItem["ID"]?>"
-																style="width: 200%; margin-left:0%;"
-																class="sku_prop_list"
-																>
-																<?
-																foreach ($arProp["VALUES"] as $valueId => $arSkuValue):
-
-																	$selected = "";
-																	foreach ($arItem["PROPS"] as $arItemProp):
-																		if ($arItemProp["CODE"] == $arItem["SKU_DATA"][$propId]["CODE"])
-																		{
-																			if ($arItemProp["VALUE"] == $arSkuValue["NAME"])
-																				$selected = "bx_active";
-																		}
-																	endforeach;
-																?>
-																	<li style="width:10%;"
-																		class="sku_prop <?=$selected?>"
-																		data-value-id="<?=$arSkuValue["NAME"]?>"
-																		data-element="<?=$arItem["ID"]?>"
-																		data-property="<?=$arProp["CODE"]?>"
-																		>
-																		<a href="javascript:void(0);"><?=$arSkuValue["NAME"]?></a>
-																	</li>
-																<?
-																endforeach;
-																?>
-															</ul>
-														</div>
-														<div class="bx_slide_left" onclick="leftScroll('<?=$arProp["CODE"]?>', <?=$arItem["ID"]?>);"></div>
-														<div class="bx_slide_right" onclick="rightScroll('<?=$arProp["CODE"]?>', <?=$arItem["ID"]?>);"></div>
-													</div>
-
-												</div>
-											<?
-											endif;
-										endforeach;
-									endif;
-									*/?>
 								</td>
 							<?
 							elseif ($arHeader["id"] == "QUANTITY"):
